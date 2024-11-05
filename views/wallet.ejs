@@ -1,0 +1,53 @@
+<h2><%= address %></h2>
+    <h3>Balance: <%= balance %></h3>
+    <h3>Last Transactions:</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Hash</th>
+          <th scope="col">Block</th>
+          <th scope="col">Age</th>
+          <th scope="col">From</th>
+          <th scope="col">To</th>
+          <th scope="col">Amount</th>
+          <th scope="col">Txn Fee</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (let i = 0; i < txs.length; i++) { %>
+        <tr>
+          <th scope="row"><%= i %></th>
+          <td><%= shortenString(txs[i].hash) %></td>
+          <td><%= txs[i].blockNumber %></td>
+          <td><%= calculateElapsedTime(txs[i].timeStamp) %></td>
+          <td><%= shortenString(txs[i].from) %></td>
+          <td><%= shortenString(txs[i].to) %></td>
+          <td><%= txs[i].value %></td>
+          <td><%= txs[i].gasUsed * txs[i].gasPrice / 1000000000000000000 %></td>
+        </tr>
+        <% } %>
+
+        <% function calculateElapsedTime(unixTimestamp) {
+            const givenTime = new Date(unixTimestamp * 1000); // Convert seconds to milliseconds
+            const currentTime = new Date();
+            const elapsedMilliseconds = currentTime - givenTime;
+            
+            // Calculate days, hours, and minutes
+            const elapsedDays = Math.floor(elapsedMilliseconds / (1000 * 60 * 60 * 24));
+            const elapsedHours = Math.floor((elapsedMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const elapsedMinutes = Math.floor((elapsedMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+            
+            return `${elapsedDays} days, ${elapsedHours} hours, ${elapsedMinutes} minutes`;
+        } %>
+
+        <% function shortenString(str) {
+            if (str.length <= 18) {
+              return str; // If the string is 18 characters or shorter, return it as is
+            }
+            
+            const firstPart = str.substring(0, 10); // First 10 characters
+            const lastPart = str.substring(str.length - 8); // Last 8 characters
+            
+            return `${firstPart}...${lastPart}`;
+        } %>
